@@ -1,12 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api'
-import {
-  PropsWithChildren,
-  ReactElement,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { PropsWithChildren, ReactElement, createContext, useContext, useEffect, useState } from 'react'
 import { RegistryTypes } from '@polkadot/types/types'
 
 type Readystate = 'unavailable' | 'init' | 'ready' | 'failed'
@@ -23,10 +16,7 @@ const ApiPromiseContext = createContext<IApiPromiseContext>({
 const logDebug = console.debug.bind(console, '[ApiPromiseContext]')
 const logError = console.error.bind(console, '[ApiPromiseContext]')
 
-const enableApiPromise = async (
-  endpoint: string,
-  types: RegistryTypes
-): Promise<ApiPromise> => {
+const enableApiPromise = async (endpoint: string, types: RegistryTypes): Promise<ApiPromise> => {
   const { cryptoWaitReady } = await import('@polkadot/util-crypto')
   await cryptoWaitReady()
   logDebug('Polkadot crypto is ready')
@@ -61,11 +51,11 @@ export const ApiPromiseProvider = ({
     setState('init')
 
     enableApiPromise(endpoint, registryTypes)
-      .then((api) => {
+      .then(api => {
         setApi(api)
         setState('ready')
       })
-      .catch((reason) => {
+      .catch(reason => {
         logError('Failed to enable Polkadot API:', reason)
         setState('failed')
       })
@@ -73,12 +63,7 @@ export const ApiPromiseProvider = ({
 
   const value = { api, readystate }
 
-  return (
-    <ApiPromiseContext.Provider value={value}>
-      {children}
-    </ApiPromiseContext.Provider>
-  )
+  return <ApiPromiseContext.Provider value={value}>{children}</ApiPromiseContext.Provider>
 }
 
-export const useApiPromise = (): IApiPromiseContext =>
-  useContext(ApiPromiseContext)
+export const useApiPromise = (): IApiPromiseContext => useContext(ApiPromiseContext)

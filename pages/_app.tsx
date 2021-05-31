@@ -23,18 +23,15 @@ const GlobalFetchingToasterContainer = ({ children }: PropsWithChildren<{}>): Re
 
   useEffect(() => {
     if (isFetching > 0 && loadingToaster.current === undefined) {
-      loadingToaster.current = toaster.info(
-        <StyledSpinnerNext $as="span" />,
-        {
-          closeable: false,
-          key: GlobalFetchingToasterContainerKey,
-          overrides: {
-            Body: {
-              style: { backgroundColor: 'black', width: 'auto' }
-            }
-          }
-        }
-      )
+      loadingToaster.current = toaster.info(<StyledSpinnerNext $as="span" />, {
+        closeable: false,
+        key: GlobalFetchingToasterContainerKey,
+        overrides: {
+          Body: {
+            style: { backgroundColor: 'black', width: 'auto' },
+          },
+        },
+      })
     }
 
     if (isFetching === 0 && loadingToaster.current !== undefined) {
@@ -43,7 +40,7 @@ const GlobalFetchingToasterContainer = ({ children }: PropsWithChildren<{}>): Re
     }
   }, [isFetching])
 
-  return (<ToasterContainer placement={ToastPlacement.bottomLeft}>{children}</ToasterContainer>)
+  return <ToasterContainer placement={ToastPlacement.bottomLeft}>{children}</ToasterContainer>
 }
 
 interface NavItemWithTarget extends NavItemT {
@@ -62,12 +59,13 @@ const App: AppComponent = ({ Component, pageProps }: AppProps) => {
     {
       active: pathname === '/',
       label: 'Overview',
-      info: { target: '/' }
-    }, {
+      info: { target: '/' },
+    },
+    {
       active: pathname === '/machines',
       label: 'Machines',
-      info: { target: '/machines' }
-    }
+      info: { target: '/machines' },
+    },
   ])
 
   const handleMainItemSelect = (item: NavItemWithTarget): void => {

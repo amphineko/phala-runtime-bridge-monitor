@@ -8,14 +8,14 @@ const DEFAULT_CHANNEL = 'prb'
 const DEFAULT_TIMEOUT = APP_MESSAGE_TUNNEL_QUERY_TIMEOUT
 
 const createRedisClient = async (redisEndpoint: string): Promise<Redis.Redis> => {
-  return await new Promise((resolve) => {
+  return await new Promise(resolve => {
     const client = new Redis(redisEndpoint)
 
     client.on('ready', () => {
       resolve(client)
     })
 
-    client.on('error', (e) => {
+    client.on('error', e => {
       logger.error('REDIS ERROR!', e)
     })
   })
@@ -30,7 +30,7 @@ export class MessageTunnel {
   private readonly ready: Promise<void>
   private readonly subscribers: Map<string, (message: prb.IMessage) => void>
 
-  constructor (endpoint: string, identity: prb.MessageTarget) {
+  constructor(endpoint: string, identity: prb.MessageTarget) {
     this.identity = identity
     this.subscribers = new Map()
 
@@ -39,7 +39,7 @@ export class MessageTunnel {
 
     const pubReady = new Promise(resolve => this.pub.on('ready', resolve))
     const subReady = new Promise(resolve => this.sub.on('ready', resolve))
-    this.ready = Promise.all([pubReady, subReady]).then(() => { })
+    this.ready = Promise.all([pubReady, subReady]).then(() => {})
   }
 
   public readonly awaitRedisReady = async (): Promise<void> => await this.ready
@@ -48,13 +48,17 @@ export class MessageTunnel {
     const createdAt = Date.now()
     const nonce = uuidv4()
 
-    const data = Object.assign({}, {
-      createdAt,
-      from: this.identity,
-      nonce,
-      to: prb.MessageTarget.MTG_BROADCAST,
-      type: prb.MessageType.MTP_BROADCAST
-    }, message)
+    const data = Object.assign(
+      {},
+      {
+        createdAt,
+        from: this.identity,
+        nonce,
+        to: prb.MessageTarget.MTG_BROADCAST,
+        type: prb.MessageType.MTP_BROADCAST,
+      },
+      message
+    )
     const payload = prb.Message.encode(data).finish()
 
     await this.pub.publishBuffer(DEFAULT_CHANNEL, Buffer.from(payload))
@@ -62,21 +66,33 @@ export class MessageTunnel {
   }
 
   public readonly broadcast = async (request: prb.IMessage): Promise<string> => {
-    return await this.publish(Object.assign({}, {
-      // defaults of broadcasts
-      to: prb.MessageTarget.MTG_BROADCAST,
-      type: prb.MessageType.MTP_BROADCAST
-    }, request))
+    return await this.publish(
+      Object.assign(
+        {},
+        {
+          // defaults of broadcasts
+          to: prb.MessageTarget.MTG_BROADCAST,
+          type: prb.MessageType.MTP_BROADCAST,
+        },
+        request
+      )
+    )
   }
 
   public readonly query = async (request: prb.IMessage): Promise<prb.IMessage> => {
     const nonce = uuidv4()
     const reply = this.recv(nonce)
 
-    await this.publish(Object.assign({}, {
-      nonce,
-      type: prb.MessageType.MTP_QUERY
-    }, request))
+    await this.publish(
+      Object.assign(
+        {},
+        {
+          nonce,
+          type: prb.MessageType.MTP_QUERY,
+        },
+        request
+      )
+    )
 
     return await reply
   }
@@ -100,7 +116,7 @@ export class MessageTunnel {
   }
 
   public readonly listen = (dispatcher: { dispatch: (message: prb.IMessage) => void }): void => {
-    this.sub.subscribe(DEFAULT_CHANNEL, (error) => {
+    this.sub.subscribe(DEFAULT_CHANNEL, error => {
       if (error !== null) {
         throw error
       }

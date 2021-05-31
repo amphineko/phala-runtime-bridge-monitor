@@ -7,8 +7,11 @@ import { StashInfo } from '../../../vendor/interfaces'
 const useStashStateQueryId = uuidv4()
 
 export const useStashStateQuery = (account?: AccountId | string, api?: ApiPromise): UseQueryResult<StashInfo> => {
-  return useQuery(
-    [useStashStateQueryId, account, api],
-    async () => account === undefined ? undefined : await api?.query.phala.stashState(account)
-  )
+  return useQuery([useStashStateQueryId, account, api], async () => {
+    if (account === undefined || api === undefined) {
+      return undefined
+    }
+
+    return await api.query.phala.stashState(account)
+  })
 }

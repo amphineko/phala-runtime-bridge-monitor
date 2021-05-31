@@ -19,11 +19,16 @@ const MachineTablePage: NextPage = () => {
     if (data === undefined) {
       return { addresses: [], pages: 1 }
     } else {
-      return { addresses: data.accounts.map(account => normalizeAddress(account)), pages: Math.floor(data.count / defaultPageSize) + 1 }
+      return {
+        addresses: data.accounts.map(account => normalizeAddress(account)),
+        pages: Math.floor(data.count / defaultPageSize) + 1,
+      }
     }
   }, [data, normalizeAddress])
 
-  useEffect(() => { page > pages && setPage(1) }, [page, pages])
+  useEffect(() => {
+    page > pages && setPage(1)
+  }, [page, pages])
 
   return (
     <>
@@ -31,7 +36,9 @@ const MachineTablePage: NextPage = () => {
       <Pagination
         numPages={pages}
         currentPage={page}
-        onPageChange={({ nextPage }) => { setPage(Math.min(Math.max(nextPage, 1), pages)) }}
+        onPageChange={({ nextPage }) => {
+          setPage(Math.min(Math.max(nextPage, 1), pages))
+        }}
       />
     </>
   )

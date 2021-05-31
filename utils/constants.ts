@@ -10,8 +10,7 @@ export const FETCH_PROCESSED_BLOB = 'FETCH_PROCESSED_BLOB'
 export const FETCH_IS_SYNCHED = 'FETCH_IS_SYNCHED'
 
 export const PHALA_CHAIN_NAME = 'PHALA_CHAIN_NAME'
-export const PHALA_ZERO_ACCOUNT =
-  '3zcnkmF6XjEogm8vAyPiL2ykPZHpeVtcfDcwTWJ2teqdSvjq'
+export const PHALA_ZERO_ACCOUNT = '3zcnkmF6XjEogm8vAyPiL2ykPZHpeVtcfDcwTWJ2teqdSvjq'
 
 export const EVENTS_STORAGE_KEY = 'EVENTS_STORAGE_KEY'
 export const GRANDPA_AUTHORITIES_KEY = ':grandpa_authorities'

@@ -14,7 +14,10 @@ interface MachineTableProps {
 
 const LoadingSpinner = (): ReactElement => <StyledSpinnerNext $as="span" />
 
-const WorkerStateColumn = ({ address, children }: {
+const WorkerStateColumn = ({
+  address,
+  children,
+}: {
   address: string
   children: (worker?: WorkerInfo) => ReactNode
 }): ReactElement => {
@@ -30,10 +33,12 @@ const WorkerCurrentStateColumn = ({ address }: { address: string }): ReactElemen
       {worker => {
         if (worker !== undefined) {
           const { type, value } = worker.state
-          return (
-            value.isEmpty
-              ? <>{type.toString()}</>
-              : <>{type.toString()} in {value.toString()}</>
+          return value.isEmpty ? (
+            <>{type.toString()}</>
+          ) : (
+            <>
+              {type.toString()} in {value.toString()}
+            </>
           )
         } else {
           return undefined
@@ -43,7 +48,10 @@ const WorkerCurrentStateColumn = ({ address }: { address: string }): ReactElemen
   )
 }
 
-const StashStateColumn = ({ address, children }: {
+const StashStateColumn = ({
+  address,
+  children,
+}: {
   address: string
   children: (worker?: StashInfo) => ReactNode
 }): ReactElement => {
@@ -58,30 +66,22 @@ export const MachineTable = ({ addresses }: MachineTableProps): ReactElement => 
 
   return (
     <TableBuilder data={addresses ?? []} isLoading={addresses === undefined}>
-      <TableBuilderColumn header="Stash">
-        {(address: string) => normalizeAddress(address)}
-      </TableBuilderColumn>
+      <TableBuilderColumn header="Stash">{(address: string) => normalizeAddress(address)}</TableBuilderColumn>
 
       <TableBuilderColumn header="Machine Id">
         {(address: string) => (
-          <WorkerStateColumn address={address}>
-            {(worker) => worker?.machineId.toHex()}
-          </WorkerStateColumn>
+          <WorkerStateColumn address={address}>{worker => worker?.machineId.toHex()}</WorkerStateColumn>
         )}
       </TableBuilderColumn>
 
       <TableBuilderColumn header="Public Key">
         {(address: string) => (
-          <WorkerStateColumn address={address}>
-            {worker => worker?.pubkey.toHex()}
-          </WorkerStateColumn>
+          <WorkerStateColumn address={address}>{worker => worker?.pubkey.toHex()}</WorkerStateColumn>
         )}
       </TableBuilderColumn>
 
       <TableBuilderColumn header="State">
-        {(address: string) => (
-          <WorkerCurrentStateColumn address={address} />
-        )}
+        {(address: string) => <WorkerCurrentStateColumn address={address} />}
       </TableBuilderColumn>
 
       <TableBuilderColumn header="Overall Score">
@@ -94,17 +94,13 @@ export const MachineTable = ({ addresses }: MachineTableProps): ReactElement => 
 
       <TableBuilderColumn header="Conf. Level">
         {(address: string) => (
-          <WorkerStateColumn address={address}>
-            {worker => worker?.confidenceLevel.toString()}
-          </WorkerStateColumn>
+          <WorkerStateColumn address={address}>{worker => worker?.confidenceLevel.toString()}</WorkerStateColumn>
         )}
       </TableBuilderColumn>
 
       <TableBuilderColumn header="Rt. Ver">
         {(address: string) => (
-          <WorkerStateColumn address={address}>
-            {worker => worker?.runtimeVersion.toString()}
-          </WorkerStateColumn>
+          <WorkerStateColumn address={address}>{worker => worker?.runtimeVersion.toString()}</WorkerStateColumn>
         )}
       </TableBuilderColumn>
 

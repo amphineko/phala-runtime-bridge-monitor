@@ -1,6 +1,9 @@
-**/node_modules/*
-**/out/*
-**/.next/*
+.next
 env.config.js
 env.development.config.js
-next.config.js
+next-env.d.ts
+node_modules
+vendor/interfaces/*
+!vendor/interfaces/definitions.ts
+vendor/proto
+vendor/proto-types
